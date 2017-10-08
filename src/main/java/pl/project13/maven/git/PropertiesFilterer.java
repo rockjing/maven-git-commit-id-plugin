@@ -63,7 +63,9 @@ public class PropertiesFilterer {
     }
 
     public void filter(Properties properties, @Nullable List<String> inclusions, String prefixDot) {
+
         if (inclusions == null || inclusions.isEmpty()) {
+            log.info("Nothing to included for filter!");
             return;
         }
 
@@ -80,6 +82,7 @@ public class PropertiesFilterer {
         }
 
         for (String key : properties.stringPropertyNames()) {
+            log.debug("PrefixDot="+ prefixDot +" key=" + key);
             if (isOurProperty(key, prefixDot) && !shouldInclude.apply(key)) {
                 log.debug("!shouldInclude.apply({}) = {}", key, shouldInclude.apply(key));
                 properties.remove(key);

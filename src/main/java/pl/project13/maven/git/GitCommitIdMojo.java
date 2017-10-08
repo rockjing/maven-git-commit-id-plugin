@@ -73,6 +73,13 @@ public class GitCommitIdMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project}", readonly = true, required = true)
   MavenProject project;
 
+
+  /**
+   *  sprint name
+   */
+  @Parameter( property = "sprintName", readonly = true, required = false)   //这是由用户传入的参数，可以在命令行中由-D参数传入
+  private String sprintName;
+
   /**
    * The list of projects in the reactor.
    */
@@ -311,6 +318,8 @@ public class GitCommitIdMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException {
+
+
     try {
       // Set the verbose setting: now it should be correctly loaded from maven.
       log.setVerbose(verbose);
@@ -373,6 +382,21 @@ public class GitCommitIdMojo extends AbstractMojo {
         loadBuildVersionAndTimeData(properties);
         loadBuildHostData(properties);
         loadShortDescribe(properties);
+        loadMavenProperties(properties);
+        if (null != this.sprintName && !this.sprintName.isEmpty() ) {
+          properties.put(this.prefix + ".sprintName", this.sprintName);
+        }
+        else
+        {
+          log.warn("No sprintName defined in MVN -DsprintName=xxx");
+        }
+
+
+
+
+
+
+
         propertiesReplacer.performReplacement(properties, replacementProperties);
         propertiesFilterer.filter(properties, includeOnlyProperties, this.prefixDot);
         propertiesFilterer.filterNot(properties, excludeProperties, this.prefixDot);
@@ -520,6 +544,34 @@ public class GitCommitIdMojo extends AbstractMojo {
 
     jGitProvider.loadGitData(properties);
   }
+
+  void loadMavenProperties(@NotNull Properties properties) throws GitCommitIdExecutionException {
+    if (project.getProperties()== null) log.info("No Maven Properties defined");
+    if (project.getProperties().size() ==0 ) log.info("No Maven Properties defined");
+
+    for (Object key :   this.getPluginContext().keySet()){
+      log.info("getPluginContext Key=" + key + " was replaced by maven context");
+    }
+
+
+
+
+
+    for (String key : project.getProperties().stringPropertyNames()) {
+      //System.out.println(key + "=" + project.getProperties().getProperty(key));
+      String value = project.getProperties().getProperty(key);
+      if(this.getPluginContext().containsKey(key)) {
+        value = this.getPluginContext().get(key).toString();
+        log.info("Key=" + key + " was replaced by maven context");
+
+      }
+        properties.put(this.prefix +"."+ key, value);
+      log.info("add maven project's properties " + key +"=" +value);
+
+
+    }
+  }
+
 
   void maybeGeneratePropertiesFile(@NotNull Properties localProperties, File base, String propertiesFilename) throws GitCommitIdExecutionException {
     try {
