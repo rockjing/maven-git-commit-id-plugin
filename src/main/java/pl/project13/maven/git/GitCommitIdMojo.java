@@ -80,7 +80,14 @@ public class GitCommitIdMojo extends AbstractMojo {
   @Parameter( property = "sprintName", readonly = true, required = false)   //这是由用户传入的参数，可以在命令行中由-D参数传入
   private String sprintName;
 
-  /**
+    /**
+     *  build number
+     */
+    @Parameter( property = "buildNumber", readonly = true, required = false)   //这是由用户传入的参数，可以在命令行中由-D参数传入
+    private String buildNumber;
+
+
+    /**
    * The list of projects in the reactor.
    */
   @Parameter(defaultValue = "${reactorProjects}", readonly = true)
@@ -383,13 +390,34 @@ public class GitCommitIdMojo extends AbstractMojo {
         loadBuildHostData(properties);
         loadShortDescribe(properties);
         loadMavenProperties(properties);
+
         if (null != this.sprintName && !this.sprintName.isEmpty() ) {
           properties.put(this.prefix + ".sprintName", this.sprintName);
         }
         else
         {
+          log.info("");
           log.warn("No sprintName defined in MVN -DsprintName=xxx");
+          log.info("");
         }
+
+          if (null != this.buildNumber && !this.buildNumber.isEmpty() ) {
+              properties.put(this.prefix + ".buildNumber", this.buildNumber);
+          }
+          else
+          {
+            log.info("");
+              log.warn("No buildNumber defined in MVN -DbuildNumber=xxx");
+            log.info("");
+          }
+
+
+
+        properties.put("version", buildVersionFromProperties(properties));
+        log.info("");
+        log.warn("version=" + buildVersionFromProperties(properties));
+        log.info("");
+
 
 
 
@@ -410,6 +438,8 @@ public class GitCommitIdMojo extends AbstractMojo {
         if (injectAllReactorProjects) {
           appendPropertiesToReactorProjects();
         }
+
+
       } catch (Exception e) {
         handlePluginFailure(e);
       }
@@ -711,6 +741,17 @@ public class GitCommitIdMojo extends AbstractMojo {
     }
 
     return retVal;
+  }
+
+  String buildVersionFromProperties(Properties properties) {
+
+    return properties.getProperty("git.build.version") +
+            "-" +  properties.getProperty("git.commit.id.abbrev") +
+            "-" +  properties.getProperty("git.sprintName")+
+            "-" +  properties.getProperty("git.build.time") ;
+
+
+
   }
 
   @SuppressWarnings( "resource" )
