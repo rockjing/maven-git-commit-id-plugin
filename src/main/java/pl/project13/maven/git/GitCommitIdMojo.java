@@ -59,6 +59,10 @@ import pl.project13.maven.git.log.MavenLoggerBridge;
 import pl.project13.maven.git.util.PropertyManager;
 import pl.project13.maven.git.util.SortedProperties;
 
+import static pl.project13.maven.git.GitCommitPropertyConstant.BRANCH;
+import static pl.project13.maven.git.GitCommitPropertyConstant.COMMIT_ID_ABBREV;
+import static pl.project13.maven.git.GitCommitPropertyConstant.COMMIT_TIME;
+
 /**
  * Puts git build-time information into property files or maven's properties.
  *
@@ -579,6 +583,7 @@ public class GitCommitIdMojo extends AbstractMojo {
     if (project.getProperties()== null) log.info("No Maven Properties defined");
     if (project.getProperties().size() ==0 ) log.info("No Maven Properties defined");
 
+    if(this.getPluginContext()!=null)
     for (Object key :   this.getPluginContext().keySet()){
       log.info("getPluginContext Key=" + key + " was replaced by maven context");
     }
@@ -743,14 +748,14 @@ public class GitCommitIdMojo extends AbstractMojo {
     return retVal;
   }
 
+  /*
+   (v7.1.8#71012-sha1:d834917)
+   */
   String buildVersionFromProperties(Properties properties) {
 
-    return properties.getProperty("git.build.version") +
-            "-" +  properties.getProperty("git.commit.id.abbrev") +
-            "-" +  properties.getProperty("git.sprintName")+
-            "-" +  properties.getProperty("git.build.time") ;
-
-
+    return properties.getProperty("git.branch")
+            +"#"+properties.getProperty("git.build.time")
+            +"-sha1:" + properties.getProperty("git.commit.id.abbrev");
 
   }
 
