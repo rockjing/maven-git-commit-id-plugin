@@ -91,24 +91,24 @@ public class GitCommitIdMojo extends AbstractMojo {
    *  这是由用户传入的参数，可以在命令行中由-D参数传入
    *  Rock add
    */
-  @Parameter( property = "jenkinsServer", readonly = true, defaultValue="UNKNOWN")
-  private String jenkinsServer;
+  @Parameter( property = "jenkinsServer", readonly = true)
+  private String jenkinsServer="undefined";
 
   /**
    *  Jenkins Job
    *  这是由用户传入的参数，可以在命令行中由-D参数传入
    *  Rock add
    */
-  @Parameter( property = "jenkinsJob", readonly = true, defaultValue="UNKNOWN")
-  private String jenkinsJob;
+  @Parameter( property = "jenkinsJob", readonly = true)
+  private String jenkinsJob="";
 
   /**
    *  Jenkins Job number
    *  这是由用户传入的参数，可以在命令行中由-D参数传入
    *  Rock add
    */
-  @Parameter( property = "jenkinsJobNumber", readonly = true, defaultValue="UNKNOWN")
-  private String jenkinsJobNumber;
+  @Parameter( property = "jenkinsJobNumber", readonly = true)
+  private String jenkinsJobNumber="undefined";
 
     /**
      *  build number
@@ -441,27 +441,22 @@ public class GitCommitIdMojo extends AbstractMojo {
             log.info("");
           }
 
-        if (null != this.jenkinsJob && !this.jenkinsJob.isEmpty() ) {
-          properties.put(this.prefix + ".jenkins", this.jenkinsServer+"-" + this.jenkinsJob+"#"+this.jenkinsJobNumber);
-        }
-        else
-        {
-          log.info("");
-          log.warn("No sprintName defined in MVN -DsprintName=xxx");
+
+        if (null == this.jenkinsJob ||  this.jenkinsJob.isEmpty() ) {
+           log.info("");
+          log.warn("No jenkins defined in MVN -DjenkinsJob=xxx");
           log.info("");
         }
+        properties.put(this.prefix + ".jenkins", this.jenkinsServer+"-" + this.jenkinsJob+"#"+this.jenkinsJobNumber);
 
 
 
         properties.put(this.prefix + ".version.fullName", buildVersionFromProperties(properties));
         log.info("");
-        log.warn(this.prefix + ".version.fullName", buildVersionFromProperties(properties));
+        log.warn(this.prefix + ".version.fullName=", buildVersionFromProperties(properties));
         log.info("");
 
-        properties.put(this.prefix + ".jenkins", buildJenkinsJobInfoFromProperties(properties));
-        log.info("");
-        log.warn(this.prefix + ".jenkins", buildJenkinsJobInfoFromProperties(properties));
-        log.info("");
+
 
 
 
@@ -511,6 +506,7 @@ public class GitCommitIdMojo extends AbstractMojo {
     } else {
       log.error(e.getMessage(), e);
     }
+    log.debug(e.getStackTrace().toString());
   }
 
   private void appendPropertiesToReactorProjects() {
@@ -796,25 +792,13 @@ public class GitCommitIdMojo extends AbstractMojo {
    */
   String buildVersionFromProperties(Properties properties) {
 
-    return properties.getProperty("git.branch")
-            +"#"+properties.getProperty("git.build.time")
-            +"-sha1:" + properties.getProperty("git.commit.id.abbrev");
+    return properties.getProperty(this.prefix+".branch")
+            +"#"+properties.getProperty(this.prefix+".build.time")
+            +"-sha1:" + properties.getProperty(this.prefix+".commit.id.abbrev");
 
   }
 
 
-  /*
-      Rock add
-      like:
-      prefix.jenkins=hostName-umu360_api#200
-   */
-  String buildJenkinsJobInfoFromProperties(Properties properties) {
-
-    return properties.getProperty(this.prefix+".jenkins");
-
-
-
-  }
 
 
 
