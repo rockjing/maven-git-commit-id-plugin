@@ -80,9 +80,35 @@ public class GitCommitIdMojo extends AbstractMojo {
 
   /**
    *  sprint name
+   *  这是由用户传入的参数，可以在命令行中由-D参数传入
+   *  Rock add
    */
-  @Parameter( property = "sprintName", readonly = true, required = false)   //这是由用户传入的参数，可以在命令行中由-D参数传入
+  @Parameter( property = "sprintName", readonly = true)
   private String sprintName;
+
+  /**
+   *  Jenkins Server
+   *  这是由用户传入的参数，可以在命令行中由-D参数传入
+   *  Rock add
+   */
+  @Parameter( property = "jenkinsServer", readonly = true, defaultValue="UNKNOWN")
+  private String jenkinsServer;
+
+  /**
+   *  Jenkins Job
+   *  这是由用户传入的参数，可以在命令行中由-D参数传入
+   *  Rock add
+   */
+  @Parameter( property = "jenkinsJob", readonly = true, defaultValue="UNKNOWN")
+  private String jenkinsJob;
+
+  /**
+   *  Jenkins Job number
+   *  这是由用户传入的参数，可以在命令行中由-D参数传入
+   *  Rock add
+   */
+  @Parameter( property = "jenkinsJobNumber", readonly = true, defaultValue="UNKNOWN")
+  private String jenkinsJobNumber;
 
     /**
      *  build number
@@ -411,16 +437,32 @@ public class GitCommitIdMojo extends AbstractMojo {
           else
           {
             log.info("");
-              log.warn("No buildNumber defined in MVN -DbuildNumber=xxx");
+            log.warn("No buildNumber defined in MVN -DbuildNumber=xxx");
             log.info("");
           }
 
+        if (null != this.jenkinsJob && !this.jenkinsJob.isEmpty() ) {
+          properties.put(this.prefix + ".jenkins", this.jenkinsServer+"-" + this.jenkinsJob+"#"+this.jenkinsJobNumber);
+        }
+        else
+        {
+          log.info("");
+          log.warn("No sprintName defined in MVN -DsprintName=xxx");
+          log.info("");
+        }
 
 
-        properties.put("version", buildVersionFromProperties(properties));
+
+        properties.put(this.prefix + ".version.fullName", buildVersionFromProperties(properties));
         log.info("");
-        log.warn("version=" + buildVersionFromProperties(properties));
+        log.warn(this.prefix + ".version.fullName", buildVersionFromProperties(properties));
         log.info("");
+
+        properties.put(this.prefix + ".jenkins", buildJenkinsJobInfoFromProperties(properties));
+        log.info("");
+        log.warn(this.prefix + ".jenkins", buildJenkinsJobInfoFromProperties(properties));
+        log.info("");
+
 
 
 
@@ -750,6 +792,7 @@ public class GitCommitIdMojo extends AbstractMojo {
 
   /*
    (v7.1.8#71012-sha1:d834917)
+   Rock add
    */
   String buildVersionFromProperties(Properties properties) {
 
@@ -758,6 +801,24 @@ public class GitCommitIdMojo extends AbstractMojo {
             +"-sha1:" + properties.getProperty("git.commit.id.abbrev");
 
   }
+
+
+  /*
+      Rock add
+      like:
+      prefix.jenkins=hostName-umu360_api#200
+   */
+  String buildJenkinsJobInfoFromProperties(Properties properties) {
+
+    return properties.getProperty(this.prefix+".jenkins");
+
+
+
+  }
+
+
+
+
 
   @SuppressWarnings( "resource" )
   private Properties readProperties(@NotNull File propertiesFile) throws CannotReadFileException {
