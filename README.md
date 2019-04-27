@@ -973,7 +973,7 @@ git.jenkins=JenkinsServer-jenkinsJob#2000
 git.version.fullName=v2.3#20190101-120000-sha1:121dcdv
 ```
 If you want to add jenkins info into git.properties, please not forget to inject these 3 variables:
-- jenkinsServer
+
 - jenkinsJob
 - jenkinsJobNumber
 

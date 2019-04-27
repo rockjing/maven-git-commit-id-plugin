@@ -86,13 +86,13 @@ public class GitCommitIdMojo extends AbstractMojo {
   @Parameter( property = "sprintName", readonly = true)
   private String sprintName;
 
-  /**
-   *  Jenkins Server
-   *  这是由用户传入的参数，可以在命令行中由-D参数传入
-   *  Rock add
-   */
-  @Parameter( property = "jenkinsServer", readonly = true)
-  private String jenkinsServer="undefined";
+//  /**
+//   *  Jenkins Server
+//   *  这是由用户传入的参数，可以在命令行中由-D参数传入
+//   *  Rock add
+//   */
+//  @Parameter( property = "jenkinsServer", readonly = true)
+//  private String jenkinsServer="undefined";
 
   /**
    *  Jenkins Job
@@ -447,7 +447,7 @@ public class GitCommitIdMojo extends AbstractMojo {
           log.warn("No jenkins defined in MVN -DjenkinsJob=xxx");
           log.info("");
         }
-        properties.put(this.prefix + ".jenkins", this.jenkinsServer+"-" + this.jenkinsJob+"#"+this.jenkinsJobNumber);
+        properties.put(this.prefix + ".jenkins",  this.jenkinsJob+"#"+this.jenkinsJobNumber);
 
 
 
