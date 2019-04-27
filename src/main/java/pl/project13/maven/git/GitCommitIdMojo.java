@@ -78,13 +78,13 @@ public class GitCommitIdMojo extends AbstractMojo {
   MavenProject project;
 
 
-  /**
-   *  sprint name
-   *  这是由用户传入的参数，可以在命令行中由-D参数传入
-   *  Rock add
-   */
-  @Parameter( property = "sprintName", readonly = true)
-  private String sprintName;
+//  /**
+//   *  sprint name
+//   *  这是由用户传入的参数，可以在命令行中由-D参数传入
+//   *  Rock add
+//   */
+//  @Parameter( property = "sprintName", readonly = true)
+//  private String sprintName;
 
 //  /**
 //   *  Jenkins Server
@@ -110,11 +110,11 @@ public class GitCommitIdMojo extends AbstractMojo {
   @Parameter( property = "jenkinsJobNumber", readonly = true)
   private String jenkinsJobNumber="undefined";
 
-    /**
-     *  build number
-     */
-    @Parameter( property = "buildNumber", readonly = true, required = false)   //这是由用户传入的参数，可以在命令行中由-D参数传入
-    private String buildNumber;
+//    /**
+//     *  build number
+//     */
+//    @Parameter( property = "buildNumber", readonly = true, required = false)   //这是由用户传入的参数，可以在命令行中由-D参数传入
+//    private String buildNumber;
 
 
     /**
@@ -421,25 +421,25 @@ public class GitCommitIdMojo extends AbstractMojo {
         loadShortDescribe(properties);
         loadMavenProperties(properties);
 
-        if (null != this.sprintName && !this.sprintName.isEmpty() ) {
-          properties.put(this.prefix + ".sprintName", this.sprintName);
-        }
-        else
-        {
-          log.info("");
-          log.warn("No sprintName defined in MVN -DsprintName=xxx");
-          log.info("");
-        }
+//        if (null != this.sprintName && !this.sprintName.isEmpty() ) {
+//          properties.put(this.prefix + ".sprintName", this.sprintName);
+//        }
+//        else
+//        {
+//          log.info("");
+//          log.warn("No sprintName defined in MVN -DsprintName=xxx");
+//          log.info("");
+//        }
 
-          if (null != this.buildNumber && !this.buildNumber.isEmpty() ) {
-              properties.put(this.prefix + ".buildNumber", this.buildNumber);
-          }
-          else
-          {
-            log.info("");
-            log.warn("No buildNumber defined in MVN -DbuildNumber=xxx");
-            log.info("");
-          }
+//          if (null != this.buildNumber && !this.buildNumber.isEmpty() ) {
+//              properties.put(this.prefix + ".buildNumber", this.buildNumber);
+//          }
+//          else
+//          {
+//            log.info("");
+//            log.warn("No buildNumber defined in MVN -DbuildNumber=xxx");
+//            log.info("");
+//          }
 
 
         if (null == this.jenkinsJob ||  this.jenkinsJob.isEmpty() ) {
@@ -791,9 +791,12 @@ public class GitCommitIdMojo extends AbstractMojo {
    Rock add
    */
   String buildVersionFromProperties(Properties properties) {
+    String inBranchName = properties.getProperty(this.prefix+".branch");
+    inBranchName = (inBranchName.isEmpty() || inBranchName == null) ? "unknow-branch"
+            : inBranchName.split("/").length==0? inBranchName: inBranchName.split("/")[1];
 
-    return properties.getProperty(this.prefix+".branch")
-            +"#"+properties.getProperty(this.prefix+".build.time")
+    return
+            inBranchName +"#"+properties.getProperty(this.prefix+".build.time")
             +"-sha1:" + properties.getProperty(this.prefix+".commit.id.abbrev");
 
   }
