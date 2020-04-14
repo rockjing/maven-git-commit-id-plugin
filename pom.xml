@@ -63,7 +63,10 @@
 
     <fest-assert.version>1.4</fest-assert.version>
 
-    <repository.domain>http://nexus.shengtang.ltd:8003/</repository.domain>
+    <repository.domain>http://nexus.shengtang.ltd:8003</repository.domain>
+    <repository.releases.path>repository/Dingshi-Hosted_Repo/</repository.releases.path>
+    <repository.snapshots.path>repository/Dingshi-Hosted-Snapshot/</repository.snapshots.path>
+
   </properties>
 
   <dependencies>
@@ -316,12 +319,12 @@
     <repository>
       <id>releases</id>
       <name>Nexus Release Repository</name>
-      <url>${repository.domain}/reposity/public/releases/</url>
+      <url>${repository.domain}/${repository.releases.path}</url>
     </repository>
     <snapshotRepository>
       <id>snapshots</id>
       <name>Nexus Snapshot Repository</name>
-      <url>http://nexus.shengtang.ltd:8003/repository/Dingshi-Hosted-Snapshot/</url>
+      <url>${repository.domain}/${repository.snapshots.path}</url>
     </snapshotRepository>
   </distributionManagement>
 
