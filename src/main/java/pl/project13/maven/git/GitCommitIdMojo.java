@@ -792,8 +792,15 @@ public class GitCommitIdMojo extends AbstractMojo {
    */
   String buildVersionFromProperties(Properties properties) {
     String inBranchName = properties.getProperty(this.prefix+".branch");
-    inBranchName = (inBranchName.isEmpty() || inBranchName == null) ? "unknow-branch"
-            : inBranchName.split("/").length==0? inBranchName: inBranchName.split("/")[1];
+
+    //inBranchName = (inBranchName.isEmpty() || inBranchName == null) ? "unknown-branch"
+//            : (inBranchName.split("/").length==0? inBranchName: inBranchName.split("/")[1]);
+
+    inBranchName = (inBranchName.isEmpty() || inBranchName == null) ? "unknown-branch"
+            : (inBranchName);
+
+    log.debug("version={}",inBranchName +"#"+properties.getProperty(this.prefix+".build.time")
+            +"-sha1:" + properties.getProperty(this.prefix+".commit.id.abbrev"));
 
     return
             inBranchName +"#"+properties.getProperty(this.prefix+".build.time")
