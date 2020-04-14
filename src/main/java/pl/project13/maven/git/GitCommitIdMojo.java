@@ -453,7 +453,7 @@ public class GitCommitIdMojo extends AbstractMojo {
 
         properties.put(this.prefix + ".version.fullName", buildVersionFromProperties(properties));
         log.info("");
-        log.warn(this.prefix + ".version.fullName=", buildVersionFromProperties(properties));
+        log.warn(this.prefix + ".version.fullName={}", buildVersionFromProperties(properties));
         log.info("");
 
 
